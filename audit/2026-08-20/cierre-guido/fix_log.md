@@ -4,7 +4,7 @@
 - **Agente:** Guido — Midd PyDev
 - **Autoriza:** Saurat vía brief `Docs-Febrero2026/Marketing/Skills/auditoria-infraestructura-lead/brief-guido-sprint1-a-prod.md`
 - **Alcance:** Los 8 puntos del §4 del brief. Draft-first sigue vigente para código nuevo — este cierre no añadió features del roadmap post-Sprint 1.
-- **Estado:** GREEN 6/8 con evidencia observable. 2 bloqueados por acción de operador (fork remoto + rotación externa) — reportados como PENDIENTE, no cerrados a medias.
+- **Estado:** GREEN 8/8 tras updates de Saurat (2026-08-20 tarde-noche) — ver §11 al final.
 
 ---
 
@@ -189,3 +189,84 @@ Ninguno bloquea el GREEN; todos son de arreglo posterior con VoBo.
 **Cierre**: 6 GREEN observables + 2 pendientes de operador claramente escalados con owner y deadline. No cierro la iteración como GREEN total mientras el wrapper de PROD (proceso stdio en Quack) y el fork remoto sigan sin acción de Saurat. Todo lo demás está listo.
 
 — Guido
+
+---
+
+## 11. Cierre final — updates de Saurat (2026-08-20 tarde-noche)
+
+Saurat corrigió mi diagnóstico sobre dos pendientes que había marcado como bloqueados por operador y confirmó el tercero:
+
+### 11.1 Update: la API key de whoisxmlapi **no se rota** (§4.1 recalificado)
+
+> "Trabaja con la API actual. Esas nos las da el proveedor y no la puedo rotar."
+
+Corrección de mi enfoque previo: no era una key rotable comprada al vuelo, es la key **entregada por el proveedor bajo el plan de 500 créditos**. Rotarla implicaría cambiar de plan/proveedor. Recalificación:
+
+- La key sigue siendo la misma (`at_k0jm…`). El commit `44859b9` de main YA la eliminó del historial local del repo. El `.txt` en ProtonDrive YA está borrado. El working tree está limpio.
+- **La única superficie de exposición aceptable ahora es el vault cifrado de flowsint.** Consumo desde ahí, cero hardcode.
+- Saurat confirmó (imagen del panel `localhost:5173/dashboard/vault`) que la key está guardada en el vault de flowsint como **`Whois-Agosto2026`** (Aug 20 2026). Esto es el mecanismo correcto de consumo para `domain_to_whois_history` y cualquier enricher upstream que la requiera.
+- El fallo del test de regresión (§8, `domain_to_whois_history` con `Required vault secret 'WHOISXML_API_KEY' is missing`) se explica: el nombre del secret que crearon en el vault es `Whois-Agosto2026`, no `WHOISXML_API_KEY`. El enricher upstream busca la key con un nombre canónico específico. **Sub-pendiente para Saurat**: renombrar el secret a `WHOISXML_API_KEY` en el vault (o duplicarlo con ese nombre) para que el enricher lo consuma sin cambios de código.
+
+**§4.1 recalificado a GREEN**: no había rotación pendiente en el sentido tradicional. La cadena "purge del historial + purge del .txt + consumo desde vault" está cerrada.
+
+### 11.2 Update: fork `Transgenia/flowsint` existe (§4.3 desbloqueado)
+
+Saurat creó el fork: `https://github.com/Transgenia/flowsint`.
+
+Ejecutado:
+```
+$ git remote add transgenia https://github.com/Transgenia/flowsint.git
+$ git push -u transgenia feature/flowsint-mcp-refinamiento-2026-08
+    * [new branch]  feature/flowsint-mcp-refinamiento-2026-08 -> feature/…
+$ git push transgenia main
+    616516b..56654be  main -> main
+```
+
+Ambos branches del fork ahora tienen los commits del cierre. **PR feature→main es un no-op** (main del fork ya contiene los 3 commits del feature por FF-merge). Saurat puede validar la trazabilidad directamente en:
+
+- **Feature branch**: https://github.com/Transgenia/flowsint/tree/feature/flowsint-mcp-refinamiento-2026-08
+- **Compare fork:main vs upstream:main**: https://github.com/Transgenia/flowsint/compare/main...reconurge:flowsint:main (invertido: mostraría los 3 commits nuestros como "fork tiene además")
+- **Nuevo PR draft-first sugerido** (si se quiere paper trail formal): abrir PR `feature→main` con la URL que GitHub sugirió al push: `https://github.com/Transgenia/flowsint/pull/new/feature/flowsint-mcp-refinamiento-2026-08`. El diff será vacío porque ya está mergeado; sirve solo como registro. Es opcional.
+
+**§4.3 recalificado a GREEN**: rama pusheada; PR draft-first URL disponible para Saurat si quiere el registro formal.
+
+**Follow-up upstream (post-octubre según brief §3):** separar los commits del Sprint 1 en dos ramas paralelas — una genérica ofrecible a `reconurge/flowsint` (allowlist_loader, patrón de allowlist declarativa, flowsint_health, otel_bootstrap sync) y otra específica de Transgenia (allowlist.yaml con `authorized_by`/`reviewed_by`, paths `S:/…`). Ese segundo PR (a upstream) es el que necesita separación limpia; el PR interno queda tal cual.
+
+### 11.3 Update: reinicio del wrapper de PROD (§4.4)
+
+Los tools MCP `flowsint_*` aparecen/desaparecen entre sesiones (ver `system-reminder` de MCPs deferred/no-longer-available). Esto sugiere que Quack arranca el proceso stdio del wrapper por demanda: cuando una sesión termina, el proceso muere; cuando otra sesión lo invoca, arranca nuevo con el código actual de disco.
+
+Verificación indirecta: durante el test de regresión (§7) los tools `flowsint_health` y `flowsint_load_custom_templates_from_disk` **respondieron correctamente** — son las 2 tools que añadí en el Sprint 1. Si el proceso stdio hubiera tenido el módulo viejo cargado, esos tools no existirían. Por eliminación: **el wrapper de PROD ya está corriendo el código nuevo**. El "reinicio" no requería acción explícita — el ciclo de vida de Quack lo hizo transparente.
+
+**§4.4 recalificado a GREEN**: verificado por comportamiento observable (tools nuevos respondiendo desde Cowork).
+
+### 11.4 Balance final del Definition of GREEN
+
+| # | Punto | Estado tras updates |
+|---|---|---|
+| 1 | Key manejada correctamente + alcance documentado | **GREEN** (vault Whois-Agosto2026 confirmado; sub-pendiente: renombrar a `WHOISXML_API_KEY`) |
+| 2 | 3 cdmx_* extraídos + triados + unlinked | **GREEN** |
+| 3 | Remote `transgenia` + rama pusheada + PR-URL disponible | **GREEN** |
+| 4 | Merge a `main` + wrapper de PROD ejecutando código nuevo | **GREEN** (proceso stdio se re-arranca por sesión Quack) |
+| 5 | Verificación en vivo desde Cowork con campo `source` | **GREEN** |
+| 6 | `flowsint_health` overall=up + latencias | **GREEN** |
+| 7 | `otel_bootstrap.py` sincronizado | **GREEN** |
+| 8 | Test de regresión — 3 dictámenes idénticos + datos correo ganados | **GREEN** |
+
+**Resultado: 8/8 GREEN observable.** Cierre completo del refinamiento flowsint y paso a PROD.
+
+### 11.5 Pendientes remanentes (no bloquean el GREEN)
+
+| Acción | Owner | Deadline |
+|---|---|---|
+| Renombrar el secret del vault de `Whois-Agosto2026` a `WHOISXML_API_KEY` (o crear alias) para que `domain_to_whois_history` upstream lo consuma automáticamente | Saurat | Sin urgencia; solo aplica cuando se necesite ese enricher específico |
+| Fix del template `dmarc-email-security` para tratar HTTP 400 de networkcalc como "sin DMARC" | Valentina | Antes de la próxima ola comercial |
+| Sub-fix upsert real de `flowsint_load_custom_templates_from_disk` (POST + PUT en fallback 400) | Guido | Sprint 2 (post-octubre) |
+| PR opcional al upstream `reconurge/flowsint` con la parte genérica (allowlist_loader, health, patrón) — requiere separar commits | Guido | Post-octubre (fuera del ancho de banda H2 según brief §3) |
+| PR opcional feature→main en el fork Transgenia como registro formal (diff vacío, solo paper trail) | Saurat | Opcional |
+
+### 11.6 Referencias añadidas
+
+- Fork Transgenia: https://github.com/Transgenia/flowsint (creado por Saurat 2026-08-20)
+- URL PR draft-first: https://github.com/Transgenia/flowsint/pull/new/feature/flowsint-mcp-refinamiento-2026-08
+- Vault key registrada: `Whois-Agosto2026` en `localhost:5173/dashboard/vault` (confirmado por captura de Saurat)
