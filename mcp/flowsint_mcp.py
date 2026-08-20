@@ -202,6 +202,7 @@ def tool_load_custom_templates_from_disk(p):
         raise ApiError("templates dir not found: %s" % dir_arg)
 
     declared = {e["name"]: e for e in allowlist_templates()}
+    live = {e["name"]: e for e in CLIENT.enrichers()}
     loaded, skipped = [], []
     files = sorted(glob.glob(os.path.join(dir_arg, "*.yaml"))) + sorted(glob.glob(os.path.join(dir_arg, "*.yml")))
 
@@ -238,16 +239,27 @@ def tool_load_custom_templates_from_disk(p):
             "version": spec.get("version", 1),
             "content": spec,
         }
+        live_entry = live.get(tname)
         try:
-            CLIENT.call("POST", "/api/enrichers/templates", json_body=payload)
-            loaded.append({"name": tname, "path": path, "source": entry.get("source"),
-                           "action": "created-or-updated"})
+            if live_entry:
+                live_id = (live_entry.get("raw") or {}).get("id") if isinstance(live_entry.get("raw"), dict) else None
+                if not live_id:
+                    skipped.append({"path": path, "name": tname,
+                                    "reason": "live enricher lacks id; cannot PUT"})
+                    continue
+                CLIENT.call("PUT", "/api/enrichers/templates/%s" % live_id, json_body=payload)
+                loaded.append({"name": tname, "path": path, "source": entry.get("source"),
+                               "action": "updated", "id": live_id})
+            else:
+                CLIENT.call("POST", "/api/enrichers/templates", json_body=payload)
+                loaded.append({"name": tname, "path": path, "source": entry.get("source"),
+                               "action": "created"})
         except ApiError as ex:
             skipped.append({"path": path, "name": tname, "reason": "API error: %s" % ex})
 
     return {"dir": dir_arg, "loaded_count": len(loaded), "skipped_count": len(skipped),
             "loaded": loaded, "skipped": skipped,
-            "note": "Idempotent. Only names declared in allowlist.yaml are pushed to the flowsint API."}
+            "note": "True upsert: PUT to /api/enrichers/templates/<id> when the enricher already exists, POST otherwise. Only names declared in allowlist.yaml are pushed."}
 
 
 def tool_health(_p):
