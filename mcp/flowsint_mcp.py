@@ -231,7 +231,13 @@ def tool_load_custom_templates_from_disk(p):
         if not ok:
             skipped.append({"path": path, "name": tname, "reason": "governance denied: %s" % reason})
             continue
-        payload = {"name": tname, "source": "flowsint-mcp-loader", "yaml": body_text, "spec": spec}
+        payload = {
+            "name": tname,
+            "category": spec.get("category") or (spec.get("input") or {}).get("type") or "Domain",
+            "description": spec.get("description", ""),
+            "version": spec.get("version", 1),
+            "content": spec,
+        }
         try:
             CLIENT.call("POST", "/api/enrichers/templates", json_body=payload)
             loaded.append({"name": tname, "path": path, "source": entry.get("source"),
