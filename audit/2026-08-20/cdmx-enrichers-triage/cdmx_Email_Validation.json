@@ -1,0 +1,113 @@
+{
+  "name": "cdmx_Email_Validation",
+  "raw_from_list": {
+    "category": "Email",
+    "id": "4f4c8a89-870d-4919-9968-48e4ad67b5dd",
+    "content": {
+      "name": "cdmx_Email_Validation",
+      "description": "Valida si un correo electrónico existe y es entregable.\nUsa Email Verification API v3 de WHOIS XML API.\n",
+      "category": "Email",
+      "version": 1,
+      "input": {
+        "type": "Email",
+        "key": "email"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://emailverification.whoisxmlapi.com/api/v1?apiKey=<REDACTED:whoisxmlapi_key>&emailAddress={{email}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "email": "emailAddress",
+          "is_valid": "formatCheck",
+          "is_deliverable": "smtpCheck",
+          "is_catch_all": "catchAllCheck",
+          "domain_exists": "domainCheck"
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": false
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "updated_at": "2026-08-20T17:49:54.489034+00:00",
+    "name": "cdmx_Email_Validation",
+    "description": "Valida si un correo electrónico existe y es entregable.\nUsa Email Verification API v3 de WHOIS XML API.\n",
+    "version": 1.0,
+    "is_public": false,
+    "created_at": "2026-08-20T17:47:57.835412+00:00"
+  },
+  "detail_probe": {
+    "id": "4f4c8a89-870d-4919-9968-48e4ad67b5dd",
+    "name": "cdmx_Email_Validation",
+    "description": "Valida si un correo electrónico existe y es entregable.\nUsa Email Verification API v3 de WHOIS XML API.\n",
+    "category": "Email",
+    "version": 1.0,
+    "content": {
+      "name": "cdmx_Email_Validation",
+      "description": "Valida si un correo electrónico existe y es entregable.\nUsa Email Verification API v3 de WHOIS XML API.\n",
+      "category": "Email",
+      "version": 1,
+      "input": {
+        "type": "Email",
+        "key": "email"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://emailverification.whoisxmlapi.com/api/v1?apiKey=<REDACTED:whoisxmlapi_key>&emailAddress={{email}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "email": "emailAddress",
+          "is_valid": "formatCheck",
+          "is_deliverable": "smtpCheck",
+          "is_catch_all": "catchAllCheck",
+          "domain_exists": "domainCheck"
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": false
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "is_public": false,
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "created_at": "2026-08-20T17:47:57.835412Z",
+    "updated_at": "2026-08-20T17:49:54.489034Z"
+  }
+}

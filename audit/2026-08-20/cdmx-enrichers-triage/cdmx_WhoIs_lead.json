@@ -1,0 +1,127 @@
+{
+  "name": "cdmx_WhoIs_lead",
+  "raw_from_list": {
+    "category": "Domain",
+    "id": "555d0083-fe86-45c7-99f9-b1fc06f94362",
+    "content": {
+      "name": "cdmx_WhoIs_lead",
+      "description": "Consulta WHOIS del dominio para extraer datos del registrante:\nnombre, organización, correo, teléfono y dirección.\nUsa WHOIS XML API. Si el registrante está oculto, marca el dominio para análisis con DNS Lookup.\n",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=YOUR_WHOIS_API_KEY&domainName={{domain}}&outputFormat=JSON",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 30
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "registrant_name": "WhoisRecord.registrant.name",
+          "registrant_organization": "WhoisRecord.registrant.organization",
+          "registrant_email": "WhoisRecord.registrant.email",
+          "registrant_phone": "WhoisRecord.registrant.phone",
+          "registrant_address": "WhoisRecord.registrant.address",
+          "registrant_city": "WhoisRecord.registrant.city",
+          "registrant_country": "WhoisRecord.registrant.country",
+          "domain_creation_date": "WhoisRecord.registryData.creationDate",
+          "domain_expiration_date": "WhoisRecord.registryData.expirationDate",
+          "domain_status": "WhoisRecord.registryData.status",
+          "registrar_name": "WhoisRecord.registrar.name",
+          "is_private": "WhoisRecord.privacy.proxyService"
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": false
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "updated_at": "2026-08-20T17:47:24.980342+00:00",
+    "name": "cdmx_WhoIs_lead",
+    "description": "Consulta WHOIS del dominio para extraer datos del registrante:\nnombre, organización, correo, teléfono y dirección.\nUsa WHOIS XML API. Si el registrante está oculto, marca el dominio para análisis con DNS Lookup.\n",
+    "version": 1.0,
+    "is_public": false,
+    "created_at": "2026-08-20T17:38:29.312121+00:00"
+  },
+  "detail_probe": {
+    "id": "555d0083-fe86-45c7-99f9-b1fc06f94362",
+    "name": "cdmx_WhoIs_lead",
+    "description": "Consulta WHOIS del dominio para extraer datos del registrante:\nnombre, organización, correo, teléfono y dirección.\nUsa WHOIS XML API. Si el registrante está oculto, marca el dominio para análisis con DNS Lookup.\n",
+    "category": "Domain",
+    "version": 1.0,
+    "content": {
+      "name": "cdmx_WhoIs_lead",
+      "description": "Consulta WHOIS del dominio para extraer datos del registrante:\nnombre, organización, correo, teléfono y dirección.\nUsa WHOIS XML API. Si el registrante está oculto, marca el dominio para análisis con DNS Lookup.\n",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey=YOUR_WHOIS_API_KEY&domainName={{domain}}&outputFormat=JSON",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 30
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "registrant_name": "WhoisRecord.registrant.name",
+          "registrant_organization": "WhoisRecord.registrant.organization",
+          "registrant_email": "WhoisRecord.registrant.email",
+          "registrant_phone": "WhoisRecord.registrant.phone",
+          "registrant_address": "WhoisRecord.registrant.address",
+          "registrant_city": "WhoisRecord.registrant.city",
+          "registrant_country": "WhoisRecord.registrant.country",
+          "domain_creation_date": "WhoisRecord.registryData.creationDate",
+          "domain_expiration_date": "WhoisRecord.registryData.expirationDate",
+          "domain_status": "WhoisRecord.registryData.status",
+          "registrar_name": "WhoisRecord.registrar.name",
+          "is_private": "WhoisRecord.privacy.proxyService"
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": false
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "is_public": false,
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "created_at": "2026-08-20T17:38:29.312121Z",
+    "updated_at": "2026-08-20T17:47:24.980342Z"
+  }
+}

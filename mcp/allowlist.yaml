@@ -1,0 +1,146 @@
+# TRANSGENIA · flowsint MCP · allowlist declarativa
+# Fuente única de verdad para clasificar enrichers (LFPDPPP + ETHICS.md).
+# Recarga automática via mtime (TTL 60 s) — no restart al editar.
+# Flujo Valentina-PR + Kelsey-VoBo (Sprint 1, VoBo Saurat 2026-08-20).
+#
+# Regla estructural (allowlist_loader.classify_enricher):
+#   1. name no está declarado    -> DENY (default-deny)
+#   2. name en `forbidden`       -> DENY (mensaje claro)
+#   3. entrada con pii_touched:true -> DENY (requiere re-autorización explícita)
+#   4. input_type no en {Domain,Ip,Asn,Cidr,Organization,Website} -> DENY
+#   5. resto -> ALLOW
+#
+# NOTA: los output_type de los enrichers upstream siguen la convención
+# "<name>_to_<X>" con X derivado; verificar contra respuesta viva de
+# /api/enrichers cuando la evidencia observable esté disponible.
+---
+version: 1
+schema_notes:
+  ttl_seconds_default: 300
+  ttl_seconds_dns: 86400        # DNS/WHOIS son deterministas 24 h típicamente
+  reviewed_at: "2026-08-20"
+
+allowlist:
+  # -------- upstream · Domain (10) --------
+  - {name: domain_to_asn,            source: upstream, input_type: Domain,  output_type: Asn,           external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_dns,            source: upstream, input_type: Domain,  output_type: DomainRecord,  external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-08-20", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_history,        source: upstream, input_type: Domain,  output_type: History,       external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 300}
+  - {name: domain_to_ip,             source: upstream, input_type: Domain,  output_type: Ip,            external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_root_domain,    source: upstream, input_type: Domain,  output_type: Domain,        external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_subdomains,     source: upstream, input_type: Domain,  output_type: Domain,        external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_tls,            source: upstream, input_type: Domain,  output_type: Tls,           external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_website,        source: upstream, input_type: Domain,  output_type: Website,       external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_whois,          source: upstream, input_type: Domain,  output_type: Whois,         external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: domain_to_whois_history,  source: upstream, input_type: Domain,  output_type: Whois,         external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  # -------- upstream · Asn/Cidr (2) --------
+  - {name: asn_to_cidrs,             source: upstream, input_type: Asn,     output_type: Cidr,          external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: cidr_to_ips,              source: upstream, input_type: Cidr,    output_type: Ip,            external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  # -------- upstream · Ip (4) --------
+  - {name: ip_to_asn,                source: upstream, input_type: Ip,      output_type: Asn,           external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: ip_to_domain,             source: upstream, input_type: Ip,      output_type: Domain,        external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: ip_to_infos,              source: upstream, input_type: Ip,      output_type: Info,          external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: ip_to_ports,              source: upstream, input_type: Ip,      output_type: Port,          external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 300}
+  # -------- upstream · Organization (3) --------
+  - {name: org_to_asn,               source: upstream, input_type: Organization, output_type: Asn,      external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: org_to_domains,           source: upstream, input_type: Organization, output_type: Domain,   external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: org_to_infos,             source: upstream, input_type: Organization, output_type: Info,     external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  # -------- upstream · Website (6) --------
+  - {name: website_to_crawler,       source: upstream, input_type: Website, output_type: CrawlResult,   external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 3600}
+  - {name: website_to_domain,        source: upstream, input_type: Website, output_type: Domain,        external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 3600}
+  - {name: website_to_links,         source: upstream, input_type: Website, output_type: Link,          external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 3600}
+  - {name: website_to_subdomains,    source: upstream, input_type: Website, output_type: Domain,        external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 86400}
+  - {name: website_to_text,          source: upstream, input_type: Website, output_type: Text,          external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 3600}
+  - {name: website_to_webtrackers,   source: upstream, input_type: Website, output_type: Tracker,       external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-06-05", reviewed_by: kelsey-mcmire, ttl_seconds: 3600}
+  # -------- upstream · Website (tech_detect) --------
+  - {name: tech_detect,              source: upstream, input_type: Website, output_type: Technology,    external_api: none,        pii_touched: false, authorized_by: reconurge-upstream, authorized_date: "2026-08-20", reviewed_by: kelsey-mcmire, ttl_seconds: 3600}
+  # -------- templates · Valentina (4) --------
+  - name: mx-email-provider
+    source: template
+    template_path: "S:/Transgenia/Flowsint/templates/01-mx-email-provider.yaml"
+    input_type: Domain
+    output_type: Domain
+    external_api: networkcalc
+    pii_touched: false
+    authorized_by: valentina-truesales
+    authorized_date: "2026-07-31"
+    reviewed_by: kelsey-mcmire
+    ttl_seconds: 86400
+    notes: "Resuelve MX; revela proveedor de correo del prospecto."
+  - name: a-hosting-ip
+    source: template
+    template_path: "S:/Transgenia/Flowsint/templates/02-a-hosting-ip.yaml"
+    input_type: Domain
+    output_type: Ip
+    external_api: networkcalc
+    pii_touched: false
+    authorized_by: valentina-truesales
+    authorized_date: "2026-07-31"
+    reviewed_by: kelsey-mcmire
+    ttl_seconds: 86400
+    notes: "Resuelve A; revela hosting/CDN (Cloudflare/Shopify/AWS)."
+  - name: txt-spf-email-infra
+    source: template
+    template_path: "S:/Transgenia/Flowsint/templates/03-txt-spf-email-infra.yaml"
+    input_type: Domain
+    output_type: Phrase
+    external_api: networkcalc
+    pii_touched: false
+    authorized_by: valentina-truesales
+    authorized_date: "2026-07-31"
+    reviewed_by: kelsey-mcmire
+    ttl_seconds: 86400
+    notes: "Devuelve TXT/SPF; huella de stack SaaS y ESPs."
+  - name: dmarc-email-security
+    source: template
+    template_path: "S:/Transgenia/Flowsint/templates/04-dmarc-email-security.yaml"
+    input_type: Domain
+    output_type: Phrase
+    external_api: networkcalc
+    pii_touched: false
+    authorized_by: valentina-truesales
+    authorized_date: "2026-08-01"
+    reviewed_by: kelsey-mcmire
+    ttl_seconds: 86400
+    notes: "Postura DMARC del dominio; ausencia/p=none = dolor vendible."
+
+# Denylist explícita para mensajes de error legibles.
+# El default-deny estructural sigue siendo la garantía real (nada fuera de
+# `allowlist` puede lanzarse). Esta lista solo mejora la observabilidad.
+forbidden:
+  - {name: individual_to_domains,          reason: "LFPDPPP: recon a personas físicas prohibido"}
+  - {name: individual_to_organization,     reason: "LFPDPPP: recon a personas físicas prohibido"}
+  - {name: email_to_breaches,              reason: "LFPDPPP + ETHICS: email/breach data prohibido"}
+  - {name: email_to_device_hudsonrock,     reason: "LFPDPPP + ETHICS: infostealer data prohibido"}
+  - {name: email_to_domain,                reason: "LFPDPPP: email como semilla prohibido"}
+  - {name: email_to_domains,               reason: "LFPDPPP: email como semilla prohibido"}
+  - {name: email_to_gravatar,              reason: "LFPDPPP: PII de gravatar prohibido"}
+  - {name: email_to_intelligence,          reason: "LFPDPPP + ETHICS: intelligence sobre email prohibido"}
+  - {name: email_to_username,              reason: "LFPDPPP: pivot email->usuario prohibido"}
+  - {name: phone_to_carrier,               reason: "LFPDPPP: teléfono como semilla prohibido"}
+  - {name: phone_to_device_hudsonrock,     reason: "LFPDPPP + ETHICS: infostealer data prohibido"}
+  - {name: phone_to_infos,                 reason: "LFPDPPP: teléfono como semilla prohibido"}
+  - {name: username_to_dehashed,           reason: "LFPDPPP + ETHICS: dehashed prohibido"}
+  - {name: username_to_device_hudsonrock,  reason: "LFPDPPP + ETHICS: infostealer data prohibido"}
+  - {name: username_to_socials_maigret,    reason: "LFPDPPP: username social recon prohibido"}
+  - {name: username_to_socials_sherlock,   reason: "LFPDPPP: username social recon prohibido"}
+  - {name: domain_to_dehashed,             reason: "ETHICS: dehashed prohibido"}
+  - {name: domain_to_dummy,                reason: "test enricher; no útil en producción"}
+  - {name: ip_to_dummy_domains,            reason: "test enricher; no útil en producción"}
+  - {name: ip_to_fraudscore,               reason: "ETHICS: fraudscore como servicio de terceros pendiente auditoría"}
+  - {name: ip_to_intelligence,             reason: "ETHICS: intelligence como servicio de terceros pendiente auditoría"}
+  - {name: cryptowallet_to_nfts,           reason: "ETHICS: crypto tracing fuera de alcance comercial"}
+  - {name: cryptowallet_to_transactions,   reason: "ETHICS: crypto tracing fuera de alcance comercial"}
+  # cdmx_* custom templates from UI (created 2026-08-20). Triaged in
+  # audit/2026-08-20/cdmx-enrichers-triage/. All three violate governance —
+  # documented explicitly for clearer error messages. Unlink proposed to Saurat.
+  - {name: cdmx_Email_Validation,          reason: "LFPDPPP: input.type=Email prohibido; además API key hardcodeada en URL (incidente de seguridad, ver audit)"}
+  - {name: cdmx_DNS_Lead_Contact,          reason: "LFPDPPP: extrae correos de contacto (PII) via whoisxmlapi; input Domain pero output cruza a PII"}
+  - {name: cdmx_WhoIs_lead,                reason: "LFPDPPP: WHOIS lookup para extraer registrante (nombre/correo/teléfono de personas físicas)"}
+
+allowed_infra_types:
+  - Domain
+  - Ip
+  - Asn
+  - Cidr
+  - Organization
+  - Website

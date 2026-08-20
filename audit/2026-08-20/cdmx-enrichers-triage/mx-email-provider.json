@@ -1,0 +1,107 @@
+{
+  "name": "mx-email-provider",
+  "raw_from_list": {
+    "category": "Domain",
+    "id": "0206f718-206a-4521-b1f8-9adcbdbdda80",
+    "content": {
+      "name": "mx-email-provider",
+      "description": "Resuelve los MX de un dominio y devuelve cada mail exchange como Domain (revela el proveedor de correo del prospecto)",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://networkcalc.com/api/dns/lookup/{{domain}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "domain": "exchange"
+        }
+      },
+      "output": {
+        "type": "Domain",
+        "is_array": true,
+        "array_path": "records.MX"
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "updated_at": "2026-08-01T06:33:05.836625+00:00",
+    "name": "mx-email-provider",
+    "description": "Resuelve los MX de un dominio y devuelve cada mail exchange como Domain (revela el proveedor de correo del prospecto)",
+    "version": 1.0,
+    "is_public": false,
+    "created_at": "2026-08-01T06:33:05.836625+00:00"
+  },
+  "detail_probe": {
+    "id": "0206f718-206a-4521-b1f8-9adcbdbdda80",
+    "name": "mx-email-provider",
+    "description": "Resuelve los MX de un dominio y devuelve cada mail exchange como Domain (revela el proveedor de correo del prospecto)",
+    "category": "Domain",
+    "version": 1.0,
+    "content": {
+      "name": "mx-email-provider",
+      "description": "Resuelve los MX de un dominio y devuelve cada mail exchange como Domain (revela el proveedor de correo del prospecto)",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://networkcalc.com/api/dns/lookup/{{domain}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "domain": "exchange"
+        }
+      },
+      "output": {
+        "type": "Domain",
+        "is_array": true,
+        "array_path": "records.MX"
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "is_public": false,
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "created_at": "2026-08-01T06:33:05.836625Z",
+    "updated_at": "2026-08-01T06:33:05.836625Z"
+  }
+}

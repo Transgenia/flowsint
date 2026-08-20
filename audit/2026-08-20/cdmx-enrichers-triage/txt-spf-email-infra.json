@@ -1,0 +1,107 @@
+{
+  "name": "txt-spf-email-infra",
+  "raw_from_list": {
+    "category": "Domain",
+    "id": "4a79b967-02dd-41d9-a126-4f8b52d6cedd",
+    "content": {
+      "name": "txt-spf-email-infra",
+      "description": "Devuelve cada registro TXT/SPF de un dominio como Phrase (revela proveedor de correo, ESPs y verificaciones SaaS del prospecto)",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://networkcalc.com/api/dns/lookup/{{domain}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "text": ""
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": true,
+        "array_path": "records.TXT"
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "updated_at": "2026-08-01T06:33:59.282515+00:00",
+    "name": "txt-spf-email-infra",
+    "description": "Devuelve cada registro TXT/SPF de un dominio como Phrase (revela proveedor de correo, ESPs y verificaciones SaaS del prospecto)",
+    "version": 1.0,
+    "is_public": false,
+    "created_at": "2026-08-01T06:33:59.282515+00:00"
+  },
+  "detail_probe": {
+    "id": "4a79b967-02dd-41d9-a126-4f8b52d6cedd",
+    "name": "txt-spf-email-infra",
+    "description": "Devuelve cada registro TXT/SPF de un dominio como Phrase (revela proveedor de correo, ESPs y verificaciones SaaS del prospecto)",
+    "category": "Domain",
+    "version": 1.0,
+    "content": {
+      "name": "txt-spf-email-infra",
+      "description": "Devuelve cada registro TXT/SPF de un dominio como Phrase (revela proveedor de correo, ESPs y verificaciones SaaS del prospecto)",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://networkcalc.com/api/dns/lookup/{{domain}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "text": ""
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": true,
+        "array_path": "records.TXT"
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "is_public": false,
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "created_at": "2026-08-01T06:33:59.282515Z",
+    "updated_at": "2026-08-01T06:33:59.282515Z"
+  }
+}

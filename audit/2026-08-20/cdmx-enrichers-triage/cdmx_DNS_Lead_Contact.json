@@ -1,0 +1,109 @@
+{
+  "name": "cdmx_DNS_Lead_Contact",
+  "raw_from_list": {
+    "category": "Domain",
+    "id": "141bfe53-f48f-4b0e-aed1-cf9d517aa924",
+    "content": {
+      "name": "cdmx_DNS_Lead_Contact",
+      "description": "Busca correos de contacto en registros DNS (TXT y MX) del dominio.\nÚtil cuando el WHOIS está oculto o no proporciona datos de contacto.\n",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://www.whoisxmlapi.com/api/dns?apiKey=<REDACTED:whoisxmlapi_key>&domainName={{domain}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "txt_records": "records.TXT.text",
+          "mx_records": "records.MX.exchange",
+          "a_records": "records.A.address"
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": false
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "updated_at": "2026-08-20T17:49:34.330793+00:00",
+    "name": "cdmx_DNS_Lead_Contact",
+    "description": "Busca correos de contacto en registros DNS (TXT y MX) del dominio.\nÚtil cuando el WHOIS está oculto o no proporciona datos de contacto.\n",
+    "version": 1.0,
+    "is_public": false,
+    "created_at": "2026-08-20T17:47:44.366744+00:00"
+  },
+  "detail_probe": {
+    "id": "141bfe53-f48f-4b0e-aed1-cf9d517aa924",
+    "name": "cdmx_DNS_Lead_Contact",
+    "description": "Busca correos de contacto en registros DNS (TXT y MX) del dominio.\nÚtil cuando el WHOIS está oculto o no proporciona datos de contacto.\n",
+    "category": "Domain",
+    "version": 1.0,
+    "content": {
+      "name": "cdmx_DNS_Lead_Contact",
+      "description": "Busca correos de contacto en registros DNS (TXT y MX) del dominio.\nÚtil cuando el WHOIS está oculto o no proporciona datos de contacto.\n",
+      "category": "Domain",
+      "version": 1,
+      "input": {
+        "type": "Domain",
+        "key": "domain"
+      },
+      "request": {
+        "method": "GET",
+        "url": "https://www.whoisxmlapi.com/api/dns?apiKey=<REDACTED:whoisxmlapi_key>&domainName={{domain}}",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "flowsint-enricher"
+        },
+        "timeout": 20
+      },
+      "response": {
+        "expect": "json",
+        "map": {
+          "txt_records": "records.TXT.text",
+          "mx_records": "records.MX.exchange",
+          "a_records": "records.A.address"
+        }
+      },
+      "output": {
+        "type": "Phrase",
+        "is_array": false
+      },
+      "retry": {
+        "max_retries": 3,
+        "backoff_factor": 1,
+        "retry_on_status": [
+          429,
+          500,
+          502,
+          503,
+          504
+        ]
+      }
+    },
+    "is_public": false,
+    "owner_id": "fff68b9f-f430-4b0c-adc0-19708decb2d8",
+    "created_at": "2026-08-20T17:47:44.366744Z",
+    "updated_at": "2026-08-20T17:49:34.330793Z"
+  }
+}
